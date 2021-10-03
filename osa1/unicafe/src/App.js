@@ -7,7 +7,7 @@ const Button = (props) => (
   <button onClick={props.handleClick}>{props.text}</button>
 )
 
-const StatisticsLine = (props) => <p>{props.name} {props.value}</p>
+const StatisticsLine = (props) => <tr><td>{props.name}</td><td>{props.value}</td></tr>
 
 const Statistics = (props) => {
   let average, positive, total = 0
@@ -20,17 +20,23 @@ const Statistics = (props) => {
 
   else {
     average = ((props.good*1)+(props.neutral*0)+(props.bad*-1))/total
-    positive = props.good / total * 100 + ' %'
+    // typistetään tulos 1 desimaalin mittaiseksi
+    average = average.toFixed(1)
+    positive = props.good / total * 100
+    // typistetään tulos
+    positive = positive.toFixed(1)  + ' %'
 
     return (
-    <div>
-      <StatisticsLine name='Good' value={props.good} />
-      <StatisticsLine name='Neutral' value={props.neutral} />
-      <StatisticsLine name='Bad' value={props.bad} />
-      <StatisticsLine name='Total' value={total} />
-      <StatisticsLine name='Average' value={average} />
-      <StatisticsLine name='Positive' value={positive} />
-    </div>
+      <table>
+        <tbody>
+          <StatisticsLine name='Good' value={props.good} />
+          <StatisticsLine name='Neutral' value={props.neutral} />
+          <StatisticsLine name='Bad' value={props.bad} />
+          <StatisticsLine name='Total' value={total} />
+          <StatisticsLine name='Average' value={average} />
+          <StatisticsLine name='Positive' value={positive} />
+        </tbody>
+      </table>
     )
   }
 
