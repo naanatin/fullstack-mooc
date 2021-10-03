@@ -7,24 +7,33 @@ const Button = (props) => (
   <button onClick={props.handleClick}>{props.text}</button>
 )
 
-const Display = (props) => <p>{props.name} {props.total}</p>
+const StatisticsLine = (props) => <p>{props.name} {props.value}</p>
 
-const CountTotals = (good, neutral, bad) => {
-  const totals = {}
+const Statistics = (props) => {
+  let average, positive, total = 0
+  total = props.good + props.neutral + props.bad
 
-  totals.total = good + neutral + bad
-  // jos nappeja ei vielä ole painettu, näytetään keskiarvona ja positiivisina 0,
-  // muussa tapauksessa suoritetaan laskenta. tällä estetään tuloksissa näkyvä 'virhe' NaN (not a number).
-  if (totals.total !== 0) {
-    totals.average = ((good*1)+(neutral*0)+(bad*-1))/totals.total
-    totals.positive = good / totals.total * 100 + ' %'
+  // jos palautteita ei ole annettu, ei tilastoja näytetä
+  if (total === 0) {
+      return <p>No feedback given.</p>
   }
+
   else {
-    totals.average = 0
-    totals.positive = 0 + ' %'
+    average = ((props.good*1)+(props.neutral*0)+(props.bad*-1))/total
+    positive = props.good / total * 100 + ' %'
+
+    return (
+    <div>
+      <StatisticsLine name='Good' value={props.good} />
+      <StatisticsLine name='Neutral' value={props.neutral} />
+      <StatisticsLine name='Bad' value={props.bad} />
+      <StatisticsLine name='Total' value={total} />
+      <StatisticsLine name='Average' value={average} />
+      <StatisticsLine name='Positive' value={positive} />
+    </div>
+    )
   }
-  
-  return totals
+
 }
 
 const App = () => {
@@ -32,24 +41,19 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  let totals = CountTotals(good, neutral, bad)
 
-  return (
-    
-    <div>
+  return (    
+    <div>      
       <Header text='Give feedback' />
-      <Button text='good' handleClick={() => setGood(good + 1)} />
-      <Button text='neutral' handleClick={() => setNeutral(neutral + 1)} />
-      <Button text='bad' handleClick={() => setBad(bad + 1)} />
+      <Button text='Good' handleClick={() => setGood(good + 1)} />
+      <Button text='Neutral' handleClick={() => setNeutral(neutral + 1)} />
+      <Button text='Bad' handleClick={() => setBad(bad + 1)} />
       <Header text='Statistics' />
-      <Display name='Good' total={good} />
-      <Display name='Neutral' total={neutral} />
-      <Display name='Bad' total={bad} />
-      <Display name='Total' total={totals.sum} />
-      <Display name='Average' total={totals.average} />
-      <Display name='Positive' total={totals.positive} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
+    
   )
+  
 }
 
 export default App
